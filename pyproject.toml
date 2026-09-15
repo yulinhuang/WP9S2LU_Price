@@ -1,0 +1,11 @@
+[project]
+name = "wp9s2lu-price"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "mlflow>=3.16.0",
+    "tabpfn>=8.5.0",
+    "torch>=2.14.0",
+]

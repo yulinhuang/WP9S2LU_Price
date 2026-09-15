@@ -149,6 +149,7 @@ index_rf <- price_index(  imputations = impdata_rf,
 
 # Define the parameter space for XGBoost
 search_space_xgboost =ps(
+  base_learner.booster           = p_fct(c("gbtree")),
   base_learner.nrounds           = p_int(16, 1000),
   base_learner.eta               = p_dbl(1e-4, 1, logscale = TRUE),
   base_learner.max_depth         = p_int(1, 20),
