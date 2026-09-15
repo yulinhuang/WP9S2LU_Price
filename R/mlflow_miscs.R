@@ -12,7 +12,7 @@ mlflow_set_experiment(
 
 
 # The function that extecutes the ML pipeline
-ML_model_mlflow <- function( data,
+mlflow_ML_model <- function( data,
                              target_var,
                              time_var,
                              id,
@@ -196,6 +196,8 @@ ML_model_mlflow <- function( data,
   print(model_performance)
   model_performance <- data.frame(measure= c("rmse", "mae", "mape","mpe","cod","lmdpe","lrmse","mmper"), perf = model_performance)
   save(model_performance, file=paste0("outputs/modelperformance",learner$id,".Rdata"))
+  
+  tuned_learner$marshal()
   
   # MLflow logging
   with(mlflow_start_run(), {
