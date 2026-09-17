@@ -2,14 +2,8 @@ library("mlflow")
 
 Sys.setenv(
   MLFLOW_PYTHON_BIN = ".venv/bin/python",
-  MLFLOW_BIN = ".venv/bin/mlflow",
-  MLFLOW_TRACKING_URI = ""
+  MLFLOW_BIN = ".venv/bin/mlflow"
 )
-
-mlflow_set_experiment(
-  experiment_name = "R-API-experiment",
-)
-
 
 # The function that extecutes the ML pipeline
 mlflow_ML_model <- function( data,
@@ -201,6 +195,7 @@ mlflow_ML_model <- function( data,
   
   # MLflow logging
   with(mlflow_start_run(), {
+    run_metadata <- mlflow_get_run()
     for (i in 1:nrow(model_performance)) {
       measure <- model_performance$measure[i]    # Key (e.g., "regr.rmse")
       perf    <- model_performance$perf[i]      # Value (e.g., 2.532101e+04)
@@ -215,7 +210,7 @@ mlflow_ML_model <- function( data,
   })
   
   #return  tuned learner trained on the full data set
-  return(tuned_learner)
+  return(run_metadata$run_uuid)
   
 }
 
