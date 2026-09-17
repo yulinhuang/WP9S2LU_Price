@@ -149,7 +149,6 @@ index_rf <- price_index(  imputations = impdata_rf,
 
 # Define the parameter space for XGBoost
 search_space_xgboost =ps(
-  base_learner.booster           = p_fct(c("gbtree")),
   base_learner.nrounds           = p_int(16, 1000),
   base_learner.eta               = p_dbl(1e-4, 1, logscale = TRUE),
   base_learner.max_depth         = p_int(1, 20),
@@ -246,60 +245,3 @@ index_cp <- price_index(imputations = impdata_cp,
                         target_var = "P", 
                         time_var = "TD",
                         name_index = "CP")
-
-
-########################
-##    TabPFN       #####
-########################
-
-library(mlr3extralearners)
-library(reticulate)
-
-reticulate::use_python(".venv/bin/python")
-py_require(c("torch", "tabpfn"))
-reticulate::py_module_available("torch")
-reticulate::py_module_available("tabpfn")
-
-
-model_path <- "./tabpfn-v3-regressor-v3_20260417_mediumdata.ckpt"
-
-
-learner <- lrn("regr.tabpfn",
-               model_path=model_path,
-               device = "cpu",
-               ignore_pretraining_limits = TRUE)
-
-
-#run the ML pipeline with Tabpfn
-model_tabpfn <- ML_model(data = mydata, 
-                         target_var = "P", 
-                         time_var = "TD", 
-                         id = "JAN",
-                         variables_onehot = variables_onehot, 
-                         variables_impact = variables_impact,
-                         learner = learner,
-                         folds = 5,
-                         n= 2) 
-
-#Obtain imputations with the ML_model
-impdata_tabpfn <- imputations(
-  # name of the datafranme
-  data = mydata,  
-  # target variable: here the log price
-  target_var = "P", 
-  # the time variable
-  time_var = "TD",
-  # the variable that identifies a product
-  id = "JAN", 
-  # the Model
-  learner = model_tabpfn
-) 
-
-
-
-# price index calculations
-
-index_tabpfn <- price_index(imputations = impdata_tabpfn,
-                            target_var = "P", 
-                            time_var = "TD",
-                            name_index = "TABPFN")
